@@ -5,12 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "start": "node --watch --env-file=.env apps/backend/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.108.2",
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "js-crypto-random": "^1.0.5",
+    "jsonwebtoken": "^9.0.3",
+    "resend": "^6.14.0",
+    "zod": "^4.4.3"
   }
 }
