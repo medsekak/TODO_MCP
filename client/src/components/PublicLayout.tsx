@@ -3,8 +3,8 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const PublicLayout = () => {
 
-    if (localStorage.getItem("token")) {
-        return <Navigate to="/dashboard" replace />;
+    if (localStorage.getItem("auth-storage")) {
+        return <Navigate to="/" replace />;
     }
 
     return <Outlet />;

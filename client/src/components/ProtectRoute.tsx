@@ -3,9 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectRoute = () => {
   
-    console.log("Token in ProtectRoute:", localStorage.getItem("token")); // Debugging line
-    if (!localStorage.getItem("token")) {
-        
+    if (!localStorage.getItem("auth-storage")) {
         return <Navigate to="/signin" replace />;
     }
 

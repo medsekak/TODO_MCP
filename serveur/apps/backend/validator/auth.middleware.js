@@ -20,7 +20,8 @@ export const registerSchema = z.object({
   email: z
     .string({ required_error: "L'email est requis" })
     .email("Format d'email invalide")
-    .toLowerCase(), // transforme en minuscule automatiquement
+    .toLowerCase()
+    .transform((val) => sanitizeString(val.trim())),
 
   password: z
     .string({ required_error: "Le mot de passe est requis" })

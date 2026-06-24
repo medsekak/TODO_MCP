@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import useSignIn from '../hooks/useSignIn';
+import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
+  const { login, loading, error } = useSignIn();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    await login(email, password);
+  }
 
   return (
     <div className="min-h-screen w-full bg-slate-950 flex items-center justify-center p-4 selection:bg-indigo-500 selection:text-white">
@@ -12,7 +25,7 @@ export default function SignIn() {
 
       {/* Carte du Formulaire */}
       <div className="relative w-full max-w-md bg-slate-900/40 backdrop-blur-xl border border-slate-800 p-8 rounded-3xl shadow-2xl">
-        
+    
         {/* En-tête */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-extrabold text-white tracking-tight mb-2">
@@ -24,7 +37,7 @@ export default function SignIn() {
         </div>
 
         {/* Formulaire */}
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {/* Email */}
           <div>
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
@@ -36,6 +49,7 @@ export default function SignIn() {
               </span>
               <input
                 type="email"
+                name="email"
                 placeholder="nom@exemple.com"
                 className="w-full pl-11 pr-4 py-3.5 bg-slate-800/40 border border-slate-700/60 rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
               />
@@ -57,6 +71,7 @@ export default function SignIn() {
                 <Lock size={18} />
               </span>
               <input
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 className="w-full pl-11 pr-12 py-3.5 bg-slate-800/40 border border-slate-700/60 rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all text-sm"
@@ -84,9 +99,9 @@ export default function SignIn() {
         {/* Footer de la carte */}
         <p className="text-center text-sm text-slate-400 mt-8">
           Pas encore de compte ?{' '}
-          <a href="#" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors underline decoration-indigo-500/40 underline-offset-4">
+          <Link to="/signup" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors underline decoration-indigo-500/40 underline-offset-4">
             Créer un compte
-          </a>
+          </Link>
         </p>
 
       </div>
