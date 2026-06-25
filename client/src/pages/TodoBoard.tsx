@@ -5,12 +5,11 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Plus, Pencil, Trash2, GripVertical } from "lucide-react";
-import toast from "react-hot-toast";
+import { Plus, Pencil, Trash2, GripVertical, Loader2 } from "lucide-react";
 import { Ticket, TicketStatus } from "../types";
-import { initialTickets } from "../data/tickets";
 import TicketModal from "../components/TicketModal";
 import useBoardStore from "../store/boardStore";
+import useTickets from "../hooks/useTickets";
 
 const COLUMNS: { id: TicketStatus; title: string; accent: string }[] = [
   { id: "todo", title: "À faire", accent: "text-slate-400" },
@@ -25,7 +24,15 @@ type ModalState =
   | { mode: "edit"; ticket: Ticket };
 
 const TodoBoard = () => {
-  const [tickets, setTickets] = useState<Ticket[]>(initialTickets);
+  const {
+    tickets,
+    setTickets,
+    loading,
+    createTicket,
+    updateTicket,
+    moveTicket,
+    deleteTicket,
+  } = useTickets();
   const [modal, setModal] = useState<ModalState>({ mode: "closed" });
 
   const search = useBoardStore((s) => s.search);
@@ -66,6 +73,13 @@ const TodoBoard = () => {
       return;
     }
 
+    const from = source.droppableId as TicketStatus;
+    const to = destination.droppableId as TicketStatus;
+    const moved = ticketsByStatus[from][source.index];
+    if (!moved) return;
+
+    const previous = tickets; // snapshot pour rollback si l'API échoue
+
     setTickets((prev) => {
       const groups: Record<TicketStatus, Ticket[]> = {
         todo: [],
@@ -74,43 +88,38 @@ const TodoBoard = () => {
       };
       prev.forEach((t) => groups[t.status].push(t));
 
-      const from = source.droppableId as TicketStatus;
-      const to = destination.droppableId as TicketStatus;
-      const [moved] = groups[from].splice(source.index, 1);
-      groups[to].splice(destination.index, 0, { ...moved, status: to });
+      const [m] = groups[from].splice(source.index, 1);
+      groups[to].splice(destination.index, 0, { ...m, status: to });
 
       return [...groups.todo, ...groups.in_progress, ...groups.done];
     });
+
+    // On ne persiste que le changement de colonne (statut).
+    if (from !== to) {
+      moveTicket(moved.id, to, previous);
+    }
   };
 
   const handleSave = (values: { title: string; description: string }) => {
     if (modal.mode === "create") {
-      const newTicket: Ticket = {
-        id: crypto.randomUUID(),
-        title: values.title,
-        description: values.description,
-        status: modal.status,
-      };
-      setTickets((prev) => [...prev, newTicket]);
-      toast.success("Ticket créé");
+      createTicket(values, modal.status);
     } else if (modal.mode === "edit") {
-      const { ticket } = modal;
-      setTickets((prev) =>
-        prev.map((t) =>
-          t.id === ticket.id
-            ? { ...t, title: values.title, description: values.description }
-            : t,
-        ),
-      );
-      toast.success("Ticket mis à jour");
+      updateTicket(modal.ticket.id, values);
     }
     setModal({ mode: "closed" });
   };
 
   const handleDelete = (id: string) => {
-    setTickets((prev) => prev.filter((t) => t.id !== id));
-    toast.success("Ticket supprimé");
+    deleteTicket(id);
   };
+
+  if (loading) {
+    return (
+      <section className="flex flex-1 items-center justify-center bg-slate-950">
+        <Loader2 className="animate-spin text-indigo-500" size={32} />
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-1 flex-col bg-slate-950 p-6 overflow-hidden">

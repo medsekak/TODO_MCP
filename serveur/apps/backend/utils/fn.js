@@ -16,10 +16,6 @@ export const signToken = (payload) => {
   });
 };
 
-export const verifyToken = (token) => {
-  return JWT.verify(token, process.env.JWT_SECRET);
-};
-
 export const signRefreshToken = (payload) => {
   return JWT.sign(payload, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: process.env.REFRESH_TOKEN_TTL || "7d",
