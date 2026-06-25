@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.resend.com',      // Le "Host" de ta capture
-  port: 465,                    // Le "Port" recommandé pour SSL
-  secure: true,                 // true pour le port 465 (SSL), false pour le port 587 (TLS)
+  host: 'smtp.gmail.com',          // Serveur SMTP de Gmail
+  port: 465,                       // Port recommandé pour SSL
+  secure: true,                    // true pour le port 465 (SSL)
   auth: {
-    user: 'resend',             // Le "User" de ta capture (c'est écrit 'resend' textuellement)
-    pass: process.env.RESEND_API_KEY, // Ta clé API secrète que tu as générée dans l'onglet "API Keys"
+    user: process.env.GMAIL_USER,         // Ton adresse Gmail complète (ex: moncompte@gmail.com)
+    pass: process.env.GMAIL_APP_PASSWORD, // Un "App Password" Google (16 caractères, 2FA requise) — PAS ton mot de passe Gmail
   },
 });
 
@@ -16,8 +16,8 @@ export const sendVerificationEmail = async (userEmail, token) => {
   const verificationLink = `${clientUrl}/verify-email?token=${token}`;
 
   const mailOptions = {
-    // IMPORTANT : Tant que tu n'as pas de domaine validé, tu DOIS utiliser l'adresse par défaut de Resend
-    from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+    // Avec Gmail, l'expéditeur doit être ton adresse Gmail (celle de GMAIL_USER)
+    from: process.env.EMAIL_FROM || process.env.GMAIL_USER,
     to: userEmail, // L'adresse de l'utilisateur (pendant les tests, ce doit être TON propre email)
     subject: 'Vérification de votre compte TODO App',
     html: `
