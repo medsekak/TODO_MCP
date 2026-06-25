@@ -48,7 +48,7 @@ const useSignUp = () => {
       });
       toast.success("Inscription réussie ! Vous pouvez maintenant vous connecter.");
       navigate("/signin"); // Rediriger vers la page de connexion après l'inscription réussie
-    } catch (err: Error | any) {
+    } catch (err) {
       const parsed = parseError(err);
       setError(parsed);
 

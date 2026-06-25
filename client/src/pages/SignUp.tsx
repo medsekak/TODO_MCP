@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import useSignUp from '../hooks/useSignUp';
 
 
@@ -17,10 +18,6 @@ export default function SignUp() {
     const username = formData.get('username') as string;
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
-
-    console.log('Nom complet:', username);
-    console.log('Email:', email);
-    console.log('Mot de passe:', password);
 
     await register(username, email, password);
   };
@@ -110,19 +107,29 @@ export default function SignUp() {
           {/* Bouton Submit */}
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 group pt-4"
+            disabled={loading}
+            className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 group pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Créer mon compte
-            <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Création du compte...
+              </>
+            ) : (
+              <>
+                Créer mon compte
+                <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         </form>
 
         {/* Footer de la carte */}
         <p className="text-center text-sm text-slate-400 mt-8">
           Déjà un compte ?{' '}
-          <a href="#" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/40 underline-offset-4">
+          <Link to="/signin" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/40 underline-offset-4">
             Se connecter
-          </a>
+          </Link>
         </p>
 
       </div>

@@ -1,9 +1,11 @@
 import React from 'react'
 import { Navigate, Outlet } from 'react-router-dom';
+import useAuthStore from '../store/authStore';
 
 const PublicLayout = () => {
+    const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-    if (localStorage.getItem("auth-storage")) {
+    if (isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 

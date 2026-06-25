@@ -11,3 +11,12 @@ export interface LoginResponse {
   user: User;
   accessToken: string;
 }
+
+export type TicketStatus = "todo" | "in_progress" | "done";
+
+export interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  status: TicketStatus;
+}

@@ -86,7 +86,7 @@ export const logoutUser = async () => {
   try {
     await api.post("/auth/logout");
   } catch {
-    // on déconnecte localement même si l'appel échoue
+    // on déconnecte localement même si l'appel serveur échoue
   } finally {
     useAuthStore.getState().logout();
   }

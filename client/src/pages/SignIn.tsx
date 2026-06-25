@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
 import useSignIn from '../hooks/useSignIn';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -89,10 +89,20 @@ export default function SignIn() {
           {/* Bouton Submit */}
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-gradient-to-r align-middle from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 group"
+            disabled={loading}
+            className="w-full py-4 px-6 bg-gradient-to-r align-middle from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 group disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Se connecter
-            <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Connexion...
+              </>
+            ) : (
+              <>
+                Se connecter
+                <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         </form>
 
