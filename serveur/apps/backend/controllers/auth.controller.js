@@ -6,7 +6,6 @@ import {
   signRefreshToken,
   signToken,
   setRefreshCookie,
-  verifyToken,
   comparePassword,
   verifyRefreshToken,
   clearRefreshCookie,

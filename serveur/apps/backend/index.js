@@ -1,6 +1,7 @@
 import express from "express";
 import { startServer } from "./server.js";
 import AuthRouter from "./routes/auth.route.js";
+import TicketRouter from "./routes/ticket.route.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -10,11 +11,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
   origin: process.env.CLIENT_URL,
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   credentials: true,
 }))
 
 app.use("/api/v1/auth", AuthRouter);
+app.use("/api/v1/tickets", TicketRouter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
