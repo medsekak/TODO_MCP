@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { User, Mail, Loader2, BadgeCheck, AlertCircle, CalendarDays } from "lucide-react";
 import useProfile from "../hooks/useProfile";
+import ApiKeysPanel from "../components/ApiKeysPanel";
 
 // Initiales pour l'avatar (max 2 lettres), même logique que la Navbar.
 const getInitials = (name: string) =>
@@ -56,22 +57,40 @@ export default function Profile() {
   const isDirty = username !== profile.username || email !== profile.email;
 
   return (
-    <section className="relative flex flex-1 flex-col justify-center overflow-y-auto bg-slate-950 p-6">
+    <section className="relative flex flex-1 flex-col overflow-y-auto bg-slate-950 px-6 py-10">
       {/* Halos lumineux d'arrière-plan */}
       <div className="pointer-events-none absolute -top-24 right-1/4 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl"></div>
       <div className="pointer-events-none absolute bottom-0 left-1/4 h-72 w-72 rounded-full bg-purple-600/10 blur-3xl"></div>
 
       <div className="relative mx-auto w-full max-w-2xl space-y-6">
-        {/* En-tête + avatar */}
-        <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-xl font-bold text-white shadow-lg shadow-indigo-500/30">
-            {getInitials(profile.username)}
-          </div>
-          <div>
-            <h1 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-2xl font-extrabold text-transparent">
-              {profile.username}
-            </h1>
-            <p className="text-sm text-slate-400">{profile.email}</p>
+        {/* Titre de la page */}
+        <header>
+          <h1 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-3xl font-extrabold text-transparent">
+            Mon profil
+          </h1>
+          <p className="mt-1 text-sm text-slate-400">
+            Gère tes informations personnelles et tes clés d'accès.
+          </p>
+        </header>
+
+        {/* Carte identité (bannière + avatar) */}
+        <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900/40">
+          <div className="h-24 bg-gradient-to-r from-indigo-600/40 via-purple-600/30 to-fuchsia-600/20"></div>
+          <div className="-mt-12 flex flex-col items-start gap-4 px-6 pb-6 sm:flex-row sm:items-end">
+            <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 text-3xl font-bold text-white shadow-lg shadow-indigo-500/30 ring-4 ring-slate-900">
+              {getInitials(profile.username)}
+            </div>
+            <div className="pb-1">
+              <div className="flex items-center gap-2">
+                <h2 className="text-xl font-bold text-slate-100">
+                  {profile.username}
+                </h2>
+                {profile.is_verified && (
+                  <BadgeCheck className="text-emerald-400" size={18} />
+                )}
+              </div>
+              <p className="text-sm text-slate-400">{profile.email}</p>
+            </div>
           </div>
         </div>
 
@@ -165,6 +184,9 @@ export default function Profile() {
             </button>
           </form>
         </div>
+
+        {/* Gestion des clés API (pour connecter le serveur MCP) */}
+        <ApiKeysPanel />
       </div>
     </section>
   );

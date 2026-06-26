@@ -48,7 +48,7 @@ const useProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await api.get<Profile>("/auth/me");
+        const res = await api.get<Profile>("/users/me");
         setProfile(res.data);
       } catch (err) {
         notifyError(parseError(err));
@@ -62,7 +62,7 @@ const useProfile = () => {
   const updateProfile = async (username: string, email: string) => {
     setSaving(true);
     try {
-      const res = await api.patch<Profile>("/auth/me", { username, email });
+      const res = await api.patch<Profile>("/users/me", { username, email });
       setProfile(res.data);
 
       // Met à jour le store pour rafraîchir l'avatar / la Navbar

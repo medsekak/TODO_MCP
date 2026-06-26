@@ -1,12 +1,5 @@
 import * as z from "zod";
-import sanitizeHtml from "sanitize-html";
-
-const sanitizeString = (str) => {
-  return sanitizeHtml(str, {
-    allowedTags: [],
-    allowedAttributes: {},
-  });
-};
+import { sanitizeString } from "../utils/fn.js";
 
 const STATUSES = ["todo", "in_progress", "done"];
 

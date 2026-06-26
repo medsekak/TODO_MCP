@@ -54,7 +54,7 @@ export default function Navbar() {
   ];
 
   return (
-    <aside className="w-20 h-screen bg-slate-900 flex flex-col justify-between items-center py-6 text-slate-400 border-r border-slate-800">
+    <aside className="fixed top-0 left-0 z-50 w-20 h-screen bg-slate-900 flex flex-col justify-between items-center py-6 text-slate-400 border-r border-slate-800">
 
       {/* 1. HAUT : Le Logo */}
       <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow cursor-pointer">

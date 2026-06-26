@@ -12,7 +12,6 @@ export interface LoginResponse {
   accessToken: string;
 }
 
-// Réponse de GET/PATCH /auth/me (champs réels renvoyés par le backend).
 export interface Profile {
   id: string;
   username: string;
@@ -28,4 +27,19 @@ export interface Ticket {
   title: string;
   description: string;
   status: TicketStatus;
+}
+
+// Clé API (métadonnées). La clé en clair n'est renvoyée qu'à la création.
+export interface ApiKey {
+  id: string;
+  name: string;
+  key_prefix: string;
+  created_at: string;
+  last_used_at: string | null;
+  revoked: boolean;
+}
+
+// Réponse de POST /api-keys : métadonnées + clé en clair (affichée une seule fois).
+export interface CreatedApiKey extends ApiKey {
+  key: string;
 }
