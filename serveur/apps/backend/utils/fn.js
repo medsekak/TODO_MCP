@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import JWT from "jsonwebtoken";
+import crypto from "crypto";
 
 export const comparePassword = (password, hashedPassword) => {
   return bcrypt.compareSync(password, hashedPassword);
@@ -43,3 +44,12 @@ export const clearRefreshCookie = (res) => {
 };
 
 export const expireAt = () => new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+
+// Hash déterministe (SHA-256) — utilisé pour stocker/retrouver les clés API.
+// Pas de bcrypt ici : une clé API est déjà aléatoire (256 bits), pas un mot de passe.
+export const sha256 = (value) =>
+  crypto.createHash("sha256").update(value).digest("hex");
+
+// Génère une clé API : "todo_sk_<64 hex>" (préfixe reconnaissable + 256 bits d'entropie).
+export const generateApiKey = () =>
+  "todo_sk_" + crypto.randomBytes(32).toString("hex");

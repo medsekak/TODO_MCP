@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyToken } from "../middleware/verify.middleware.js";
+import { authenticate } from "../middleware/verify.middleware.js";
 import { Validate } from "../middleware/validate.middleware.js";
 import {
   createTicketSchema,
@@ -14,8 +14,8 @@ import {
 
 const router = Router();
 
-// Toutes les routes tickets exigent un utilisateur authentifié.
-router.use(verifyToken);
+// Toutes les routes tickets exigent un utilisateur authentifié (JWT navigateur OU clé API).
+router.use(authenticate);
 
 router.get("/", ListTickets);
 router.post("/", Validate(createTicketSchema), CreateTicket);

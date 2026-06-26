@@ -9,6 +9,7 @@ interface IAuth {
     login: (user: User, token: string) => void;
     logout: () => void;
     setAccessToken: (token: string) => void;
+    setUser: (user: User) => void;
 }
 
 const useAuthStore = create<IAuth>()(
@@ -25,6 +26,8 @@ const useAuthStore = create<IAuth>()(
         set({ user: null, accessToken: null, isAuthenticated: false }),
 
       setAccessToken: (token) => set({ accessToken: token }),
+
+      setUser: (user) => set({ user }),
     }),
     {
       name: "auth-storage",

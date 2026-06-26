@@ -2,6 +2,7 @@ import express from "express";
 import { startServer } from "./server.js";
 import AuthRouter from "./routes/auth.route.js";
 import TicketRouter from "./routes/ticket.route.js";
+import ApiKeyRouter from "./routes/apikey.route.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -17,6 +18,7 @@ app.use(cors({
 
 app.use("/api/v1/auth", AuthRouter);
 app.use("/api/v1/tickets", TicketRouter);
+app.use("/api/v1/api-keys", ApiKeyRouter);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });

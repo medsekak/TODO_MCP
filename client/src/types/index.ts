@@ -12,6 +12,15 @@ export interface LoginResponse {
   accessToken: string;
 }
 
+// Réponse de GET/PATCH /auth/me (champs réels renvoyés par le backend).
+export interface Profile {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  is_verified: boolean;
+}
+
 export type TicketStatus = "todo" | "in_progress" | "done";
 
 export interface Ticket {
