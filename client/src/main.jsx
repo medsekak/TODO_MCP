@@ -5,8 +5,10 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import ProtectRoute from './components/ProtectRoute.js'
 import PublicLayout from './components/PublicLayout.js'
+import Layout from './components/Layout.js'
 import SignIn from './pages/SignIn.js'
 import SignUp from './pages/SignUp.js'
+import Profile from './pages/Profile.js'
 import EmailVerification from './pages/EmailVerification.js'
 import { Toaster } from 'react-hot-toast'
 
@@ -15,8 +17,13 @@ const router = createBrowserRouter([
     path: "/",
     element: <ProtectRoute/>,
     children: [
-      { path: "/", element: <App /> },
-      // verfie avec token
+      {
+        element: <Layout />,
+        children: [
+          { path: "/", element: <App /> },
+          { path: "/profile", element: <Profile /> },
+        ],
+      },
     ],
   },
   {

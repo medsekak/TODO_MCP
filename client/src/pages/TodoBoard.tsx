@@ -11,10 +11,38 @@ import TicketModal from "../components/TicketModal";
 import useBoardStore from "../store/boardStore";
 import useTickets from "../hooks/useTickets";
 
-const COLUMNS: { id: TicketStatus; title: string; accent: string }[] = [
-  { id: "todo", title: "À faire", accent: "text-slate-400" },
-  { id: "in_progress", title: "En cours", accent: "text-indigo-400" },
-  { id: "done", title: "Terminé", accent: "text-emerald-400" },
+const COLUMNS: {
+  id: TicketStatus;
+  title: string;
+  accent: string;
+  dot: string;
+  bar: string;
+  glow: string;
+}[] = [
+  {
+    id: "todo",
+    title: "À faire",
+    accent: "text-slate-300",
+    dot: "bg-slate-500",
+    bar: "bg-slate-500",
+    glow: "from-slate-500/10",
+  },
+  {
+    id: "in_progress",
+    title: "En cours",
+    accent: "text-indigo-300",
+    dot: "bg-indigo-500",
+    bar: "bg-indigo-500",
+    glow: "from-indigo-500/10",
+  },
+  {
+    id: "done",
+    title: "Terminé",
+    accent: "text-emerald-300",
+    dot: "bg-emerald-500",
+    bar: "bg-emerald-500",
+    glow: "from-emerald-500/10",
+  },
 ];
 
 // État du modal : fermé, création (dans une colonne), ou édition d'un ticket.
@@ -122,26 +150,33 @@ const TodoBoard = () => {
   }
 
   return (
-    <section className="flex flex-1 flex-col bg-slate-950 p-6 overflow-hidden">
+    <section className="relative flex flex-1 flex-col bg-slate-950 p-6 overflow-hidden">
+      {/* Halos lumineux d'arrière-plan */}
+      <div className="pointer-events-none absolute -top-24 left-1/4 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl"></div>
+      <div className="pointer-events-none absolute bottom-0 right-1/4 h-72 w-72 rounded-full bg-purple-600/10 blur-3xl"></div>
+
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex flex-1 gap-5 overflow-x-auto">
+        <div className="relative flex flex-1 gap-5 overflow-x-auto pb-2">
           {visibleColumns.map((column) => {
             const columnTickets = ticketsByStatus[column.id].filter(matchesSearch);
             return (
               <div
                 key={column.id}
-                className="flex w-80 shrink-0 flex-col rounded-3xl bg-slate-900/50 border border-slate-800"
+                className={`relative flex w-80 shrink-0 flex-col rounded-3xl border border-slate-800 bg-slate-900/40 bg-gradient-to-b ${column.glow} to-transparent`}
               >
                 {/* En-tête de colonne */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
-                  <h2 className={`text-sm font-bold uppercase tracking-wider ${column.accent}`}>
+                <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-800/80">
+                  <h2 className={`flex items-center gap-2 text-sm font-bold uppercase tracking-wider ${column.accent}`}>
+                    <span className={`h-2 w-2 rounded-full ${column.dot}`}></span>
                     {column.title}
-                    <span className="ml-2 text-slate-600">{columnTickets.length}</span>
+                    <span className="ml-1 rounded-full bg-slate-800 px-2 py-0.5 text-[11px] font-semibold text-slate-400">
+                      {columnTickets.length}
+                    </span>
                   </h2>
                   <button
                     type="button"
                     onClick={() => setModal({ mode: "create", status: column.id })}
-                    className="text-slate-500 hover:text-indigo-400 transition-colors"
+                    className="rounded-lg p-1 text-slate-500 hover:bg-slate-800 hover:text-indigo-400 transition-colors"
                     aria-label={`Ajouter un ticket dans ${column.title}`}
                   >
                     <Plus size={18} />
@@ -169,12 +204,17 @@ const TodoBoard = () => {
                             <div
                               ref={dragProvided.innerRef}
                               {...dragProvided.draggableProps}
-                              className={`group rounded-2xl border border-slate-800 bg-slate-900 p-3.5 shadow-sm transition-shadow ${
+                              className={`group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 p-3.5 pl-4 shadow-sm transition-all ${
                                 dragSnapshot.isDragging
-                                  ? "shadow-lg ring-2 ring-indigo-500/40"
-                                  : "hover:border-slate-700"
+                                  ? "shadow-xl ring-2 ring-indigo-500/40 rotate-1"
+                                  : "hover:border-slate-700 hover:bg-slate-800/60"
                               }`}
                             >
+                              {/* Barre d'accent selon le statut */}
+                              <span
+                                className={`absolute inset-y-0 left-0 w-1 ${column.bar} opacity-70`}
+                              ></span>
+
                               <div className="flex items-start gap-2">
                                 <span
                                   {...dragProvided.dragHandleProps}
@@ -226,9 +266,27 @@ const TodoBoard = () => {
                       {provided.placeholder}
 
                       {columnTickets.length === 0 && !snapshot.isDraggingOver && (
-                        <p className="py-6 text-center text-xs text-slate-600">
-                          {isSearching ? "Aucun résultat" : "Aucun ticket"}
-                        </p>
+                        isSearching ? (
+                          <div className="flex flex-col items-center gap-1 rounded-2xl border border-dashed border-slate-800 py-8 text-center">
+                            <p className="text-xs font-medium text-slate-500">
+                              Aucun résultat
+                            </p>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setModal({ mode: "create", status: column.id })}
+                            className="flex w-full flex-col items-center gap-1 rounded-2xl border border-dashed border-slate-800 py-8 text-center transition-colors hover:border-indigo-500/50 hover:bg-slate-800/30"
+                          >
+                            <Plus size={18} className="text-slate-600" />
+                            <span className="text-xs font-medium text-slate-500">
+                              Aucun ticket
+                            </span>
+                            <span className="text-[11px] text-slate-600">
+                              Clique ici pour en ajouter un
+                            </span>
+                          </button>
+                        )
                       )}
                     </div>
                   )}

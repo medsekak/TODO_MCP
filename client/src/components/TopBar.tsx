@@ -17,7 +17,9 @@ const TopBar = () => {
   return (
     <header className="flex flex-col gap-4 bg-slate-950 border-b border-slate-800 px-6 py-4 lg:flex-row lg:items-center lg:justify-between">
       <div>
-        <h1 className="text-lg font-bold text-white">Mes tickets</h1>
+        <h1 className="bg-gradient-to-r from-white to-slate-400 bg-clip-text text-lg font-bold text-transparent">
+          Mes tickets
+        </h1>
         <p className="text-xs text-slate-500">
           Organise tes tâches en glissant les tickets entre les colonnes.
         </p>
