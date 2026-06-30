@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   CheckSquare,
   ListTodo,
@@ -16,6 +16,7 @@ import { logoutUser } from '../lib/api';
 export default function Navbar() {
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -46,44 +47,62 @@ export default function Navbar() {
     navigate('/signin');     // cohérent avec la redirection de api.ts
   };
 
-  const navItems = [
-    { icon: ListTodo, label: "Tâches", active: true },
-    { icon: Calendar, label: "Agenda", active: false },
-    { icon: PieChart, label: "Stats", active: false },
-    { icon: Settings, label: "Settings", active: false },
+  // `to` = route cible (null = pas encore de page → bouton désactivé).
+  const navItems: { icon: typeof ListTodo; label: string; to: string | null }[] = [
+    { icon: ListTodo, label: "Tâches", to: "/" },
+    { icon: Calendar, label: "Agenda", to: null },
+    { icon: PieChart, label: "Stats", to: null },
+    { icon: Settings, label: "Settings", to: "/settings" },
   ];
 
   return (
-    <aside className="fixed top-0 left-0 z-50 w-20 h-screen bg-slate-900 flex flex-col justify-between items-center py-6 text-slate-400 border-r border-slate-800">
+    <aside className="fixed top-4 left-4 bottom-4 z-50 w-20 rounded-3xl bg-slate-900/60 backdrop-blur-2xl flex flex-col justify-between items-center py-6 text-slate-400 border border-slate-800/80 shadow-2xl shadow-black/50">
+
+      {/* Halos lumineux clippés au rail (pas d'overflow-hidden sur l'aside,
+          sinon le popover profil — affiché left-full — serait rogné). */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
+        <div className="absolute -top-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-indigo-600/15 blur-3xl"></div>
+        <div className="absolute -bottom-16 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-purple-600/10 blur-3xl"></div>
+      </div>
 
       {/* 1. HAUT : Le Logo */}
-      <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow cursor-pointer">
+      <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow cursor-pointer">
         <CheckSquare size={24} strokeWidth={2.5} />
       </div>
 
       {/* 2. MILIEU : Les Icônes Nécessaires (Navigation) */}
-      <nav className="flex flex-col gap-2 flex-1 justify-center w-full px-2">
-        {navItems.map(({ icon: Icon, label, active }) => (
-          <button
-            key={label}
-            className={`relative flex flex-col items-center justify-center py-3 rounded-xl transition-all group ${
-              active
-                ? "bg-slate-800 text-indigo-400"
-                : "hover:bg-slate-800/60 hover:text-slate-100"
-            }`}
-          >
-            {/* Barre d'accent de l'onglet actif */}
-            {active && (
-              <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-indigo-500"></span>
-            )}
-            <Icon size={22} />
-            <span className="text-[10px] mt-1 font-medium">{label}</span>
-          </button>
-        ))}
+      <nav className="relative flex flex-col gap-2 flex-1 justify-center w-full px-2">
+        {navItems.map(({ icon: Icon, label, to }) => {
+          const active = to !== null && pathname === to;
+          const disabled = to === null;
+          return (
+            <button
+              key={label}
+              type="button"
+              disabled={disabled}
+              onClick={() => to && navigate(to)}
+              title={disabled ? "Bientôt disponible" : label}
+              className={`relative flex flex-col items-center justify-center py-3 rounded-2xl transition-all group ${
+                active
+                  ? "border border-indigo-500/20 bg-gradient-to-br from-indigo-500/15 to-purple-600/10 text-indigo-300"
+                  : disabled
+                    ? "border border-transparent opacity-40 cursor-not-allowed"
+                    : "border border-transparent hover:bg-slate-800/40 hover:text-slate-100"
+              }`}
+            >
+              {/* Barre d'accent de l'onglet actif */}
+              {active && (
+                <span className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-gradient-to-b from-indigo-400 to-purple-500"></span>
+              )}
+              <Icon size={22} />
+              <span className="text-[10px] mt-1 font-medium">{label}</span>
+            </button>
+          );
+        })}
       </nav>
 
       {/* 3. BAS : Profil Utilisateur & Logout */}
-      <div ref={menuRef} className="relative flex flex-col items-center gap-4 w-full px-2 border-t border-slate-800 pt-4">
+      <div ref={menuRef} className="relative flex flex-col items-center gap-4 w-full px-2 border-t border-slate-800/80 pt-4">
         {/* Icône User / Profil */}
         <button
           onClick={() => setOpen((v) => !v)}
@@ -96,7 +115,7 @@ export default function Navbar() {
 
         {/* Popover Profil */}
         {open && (
-          <div className="absolute left-full bottom-0 ml-3 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl shadow-indigo-500/20 overflow-hidden z-50">
+          <div className="absolute left-full bottom-0 ml-3 w-56 bg-slate-900/90 backdrop-blur-xl border border-slate-800/80 rounded-2xl shadow-2xl shadow-indigo-500/20 overflow-hidden z-50">
             <div className="px-4 py-3">
               <p className="text-sm font-semibold text-slate-100 truncate">
                 {user?.username ?? 'Utilisateur'}

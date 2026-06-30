@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { User, Mail, Loader2, BadgeCheck, AlertCircle, CalendarDays } from "lucide-react";
 import useProfile from "../hooks/useProfile";
-import ApiKeysPanel from "../components/ApiKeysPanel";
 
 // Initiales pour l'avatar (max 2 lettres), même logique que la Navbar.
 const getInitials = (name: string) =>
@@ -184,9 +183,6 @@ export default function Profile() {
             </button>
           </form>
         </div>
-
-        {/* Gestion des clés API (pour connecter le serveur MCP) */}
-        <ApiKeysPanel />
       </div>
     </section>
   );
