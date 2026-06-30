@@ -6,11 +6,13 @@
   "type": "module",
   "scripts": {
     "test": "npm test",
-    "start": "node --watch --env-file=.env apps/backend/index.js"
+    "start": "node --watch --env-file=.env apps/backend/index.js",
+    "mcp": "node --env-file=.env apps/mcp-server/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@supabase/supabase-js": "^2.108.2",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
