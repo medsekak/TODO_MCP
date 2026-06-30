@@ -9,6 +9,7 @@ import Layout from './components/Layout.js'
 import SignIn from './pages/SignIn.js'
 import SignUp from './pages/SignUp.js'
 import Profile from './pages/Profile.js'
+import Settings from './pages/Settings.js'
 import EmailVerification from './pages/EmailVerification.js'
 import { Toaster } from 'react-hot-toast'
 
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
         children: [
           { path: "/", element: <App /> },
           { path: "/profile", element: <Profile /> },
+          { path: "/settings", element: <Settings /> },
         ],
       },
     ],
