@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   CheckSquare,
   ListTodo,
@@ -66,9 +66,9 @@ export default function Navbar() {
       </div>
 
       {/* 1. HAUT : Le Logo */}
-      <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow cursor-pointer">
+      <Link to="/" className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-shadow cursor-pointer">
         <CheckSquare size={24} strokeWidth={2.5} />
-      </div>
+      </Link>
 
       {/* 2. MILIEU : Les Icônes Nécessaires (Navigation) */}
       <nav className="relative flex flex-col gap-2 flex-1 justify-center w-full px-2">
@@ -106,7 +106,7 @@ export default function Navbar() {
         {/* Icône User / Profil */}
         <button
           onClick={() => setOpen((v) => !v)}
-          className={`w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-semibold text-white transition-all hover:ring-2 hover:ring-indigo-400 hover:ring-offset-2 hover:ring-offset-slate-900 ${
+          className={`cursor-pointer w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-sm font-semibold text-white transition-all hover:ring-2 hover:ring-indigo-400 hover:ring-offset-2 hover:ring-offset-slate-900 ${
             open ? "ring-2 ring-indigo-400 ring-offset-2 ring-offset-slate-900" : ""
           }`}
         >

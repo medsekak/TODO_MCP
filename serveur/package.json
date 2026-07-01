@@ -7,7 +7,8 @@
   "scripts": {
     "test": "npm test",
     "start": "node --watch --env-file=.env apps/backend/index.js",
-    "mcp": "node --env-file=.env apps/mcp-server/index.js"
+    "mcp": "node --env-file=.env apps/mcp-server/index.js",
+    "mcp:http": "node --env-file=.env apps/mcp-server/http.js"
   },
   "author": "",
   "license": "ISC",

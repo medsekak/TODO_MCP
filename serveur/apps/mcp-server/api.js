@@ -1,22 +1,19 @@
 // Client HTTP minimal vers l'API REST du backend.
-// Authentification par clé API (générée depuis la page Profile) : pas de login.
-// Pour passer en distant plus tard : changer API_BASE_URL (rien d'autre à modifier).
+// Auth par clé API (todo_sk_…) fournie PAR REQUÊTE : le service MCP ne détient
+// aucun secret, il relaie la clé de l'appelant. API_BASE_URL pointe vers le backend.
 
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/api/v1";
-const API_KEY = process.env.TODO_API_KEY;
 
-async function request(method, path, body) {
-  if (!API_KEY) {
-    throw new Error(
-      "TODO_API_KEY manquante : génère une clé dans la page Profile et expose-la au serveur MCP",
-    );
+async function request(method, path, body, apiKey) {
+  if (!apiKey) {
+    throw new Error("Clé API manquante : fournis un header Authorization: Bearer todo_sk_…");
   }
 
   const res = await fetch(`${API_BASE_URL}${path}`, {
     method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${API_KEY}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -40,7 +37,9 @@ async function request(method, path, body) {
   return data;
 }
 
-export const listTodos = () => request("GET", "/tickets");
-export const createTodo = (fields) => request("POST", "/tickets", fields);
-export const updateTodo = (id, fields) => request("PATCH", `/tickets/${id}`, fields);
-export const deleteTodo = (id) => request("DELETE", `/tickets/${id}`);
+export const listTodos = (apiKey) => request("GET", "/tickets", undefined, apiKey);
+export const createTodo = (fields, apiKey) => request("POST", "/tickets", fields, apiKey);
+export const updateTodo = (id, fields, apiKey) =>
+  request("PATCH", `/tickets/${id}`, fields, apiKey);
+export const deleteTodo = (id, apiKey) =>
+  request("DELETE", `/tickets/${id}`, undefined, apiKey);
