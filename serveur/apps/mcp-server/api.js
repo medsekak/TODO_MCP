@@ -2,7 +2,7 @@
 // Auth par clé API (todo_sk_…) fournie PAR REQUÊTE : le service MCP ne détient
 // aucun secret, il relaie la clé de l'appelant. API_BASE_URL pointe vers le backend.
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000/api/v1";
+const API_BASE_URL = process.env.API_BASE_URL
 
 async function request(method, path, body, apiKey) {
   if (!apiKey) {
@@ -37,9 +37,9 @@ async function request(method, path, body, apiKey) {
   return data;
 }
 
-export const listTodos = (apiKey) => request("GET", "/tickets", undefined, apiKey);
-export const createTodo = (fields, apiKey) => request("POST", "/tickets", fields, apiKey);
+export const listTodos = (apiKey) => request("GET", "/api/v1/tickets", undefined, apiKey);
+export const createTodo = (fields, apiKey) => request("POST", "/api/v1/tickets", fields, apiKey);
 export const updateTodo = (id, fields, apiKey) =>
-  request("PATCH", `/tickets/${id}`, fields, apiKey);
+  request("PATCH", `/api/v1/tickets/${id}`, fields, apiKey);
 export const deleteTodo = (id, apiKey) =>
-  request("DELETE", `/tickets/${id}`, undefined, apiKey);
+  request("DELETE", `/api/v1/tickets/${id}`, undefined, apiKey);
