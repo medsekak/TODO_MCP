@@ -1,8 +1,26 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import useSignUp from '../hooks/useSignUp';
+
+
+
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const { register, loading, error } = useSignUp();
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    await register(username, email, password);
+  };
 
   return (
     <div className="min-h-screen w-full bg-slate-950 flex items-center justify-center p-4 selection:bg-purple-500 selection:text-white">
@@ -24,7 +42,7 @@ export default function SignUp() {
         </div>
 
         {/* Formulaire */}
-        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+        <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Nom complet */}
           <div>
             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
@@ -35,6 +53,7 @@ export default function SignUp() {
                 <User size={18} />
               </span>
               <input
+                name="username"
                 type="text"
                 placeholder="John Doe"
                 className="w-full pl-11 pr-4 py-3.5 bg-slate-800/40 border border-slate-700/60 rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
@@ -52,6 +71,7 @@ export default function SignUp() {
                 <Mail size={18} />
               </span>
               <input
+                name="email"
                 type="email"
                 placeholder="nom@exemple.com"
                 className="w-full pl-11 pr-4 py-3.5 bg-slate-800/40 border border-slate-700/60 rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
@@ -69,6 +89,7 @@ export default function SignUp() {
                 <Lock size={18} />
               </span>
               <input
+                name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Au moins 8 caractères"
                 className="w-full pl-11 pr-12 py-3.5 bg-slate-800/40 border border-slate-700/60 rounded-2xl text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all text-sm"
@@ -86,19 +107,29 @@ export default function SignUp() {
           {/* Bouton Submit */}
           <button
             type="submit"
-            className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 group pt-4"
+            disabled={loading}
+            className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-indigo-500 hover:from-purple-700 hover:to-indigo-600 text-white font-semibold rounded-2xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 group pt-4 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            Créer mon compte
-            <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+            {loading ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                Création du compte...
+              </>
+            ) : (
+              <>
+                Créer mon compte
+                <ArrowRight size={18} className="transform group-hover:translate-x-1 transition-transform" />
+              </>
+            )}
           </button>
         </form>
 
         {/* Footer de la carte */}
         <p className="text-center text-sm text-slate-400 mt-8">
           Déjà un compte ?{' '}
-          <a href="#" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/40 underline-offset-4">
+          <Link to="/signin" className="font-semibold text-purple-400 hover:text-purple-300 transition-colors underline decoration-purple-500/40 underline-offset-4">
             Se connecter
-          </a>
+          </Link>
         </p>
 
       </div>
