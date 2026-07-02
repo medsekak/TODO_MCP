@@ -30,18 +30,23 @@ export const verifyRefreshToken = (token) => {
 
 export const REFRESH_COOKIE = "refreshToken";
 
+const isProd = process.env.NODE_ENV === "production";
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: isProd ? "none" : "lax",
+  secure: isProd,
+  path: "/api/v1/auth",
+};
+
 export const setRefreshCookie = (res, token) => {
   res.cookie(REFRESH_COOKIE, token, {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    ...cookieOptions,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
-    path: "/api/v1/auth",
   });
 };
 
 export const clearRefreshCookie = (res) => {
-  res.clearCookie(REFRESH_COOKIE, { path: "/api/v1/auth" });
+  res.clearCookie(REFRESH_COOKIE, cookieOptions);
 };
 
 export const expireAt = () => new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
